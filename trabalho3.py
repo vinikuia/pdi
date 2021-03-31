@@ -2,6 +2,7 @@ import sys
 import cv2
 import numpy as np
 import gaussianBloom as gb
+import boxBlur as bb
 
 INPUT_IMAGE = 'Wind Waker GC.bmp'
 IS_CINZA = False # se True abre a imagem como GrayScale, se não abre como Colorida
@@ -23,8 +24,12 @@ def exec():
         img = img.reshape((img.shape[0], img.shape[1], 3))
 
     img = img.astype(np.float32) / 255
-    imgFinalIngenua = gb.execGaussianBloom(img)
-    # cv2.imshow('02 - out', img_final)
-    # cv2.imwrite('02 - out.png', img_final * 255)
+    imgFinalGaussiana = gb.execGaussianBloom(img)
+    imgFinalBoxBlur = bb.execBoxBlur(img)
+
+    cv2.imshow('imgFinalGaussiana - out', imgFinalGaussiana)
+    cv2.imwrite('imgFinalGaussiana - out.png', imgFinalGaussiana * 255)
+    cv2.imshow('imgFinalBoxBlur - out', imgFinalBoxBlur)
+    cv2.imwrite('imgFinalBoxBlur - out.png', imgFinalBoxBlur * 255)
     cv2.waitKey() & 0xff
     cv2.destroyAllWindows()

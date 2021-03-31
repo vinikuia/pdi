@@ -3,8 +3,7 @@ import numpy as np
 
 FATOR_DE_CORRECAO_BETA = 0.3
 FATOR_DE_CORRECAO_ALFA = 0.8
-
-def execGaussianBloom(img):
+def execBoxBlur(img):
     img_cpy = np.copy(img)
     hsl_img = cv.cvtColor(img_cpy, cv.COLOR_RGB2HLS_FULL)
 
@@ -14,8 +13,8 @@ def execGaussianBloom(img):
     mask = cv.inRange(lchannel, 0.6, 1)
     res = cv.bitwise_and(img_cpy, img_cpy, mask=mask)
     sum_blur = res
-    for i in range(1,9,2):
-        blur = cv.GaussianBlur(res,(5*i,5*i),cv.BORDER_DEFAULT)
+    for i in range(1,5,1):
+        blur = cv.blur(res,(5*i,5*i),cv.BORDER_DEFAULT)
         sum_blur += blur
 
 
@@ -29,7 +28,3 @@ def execGaussianBloom(img):
 
     # cv.imshow('img_out', res)
     # cv.imshow('first_blur', res)
-
-
-
-
