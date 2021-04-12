@@ -6,11 +6,12 @@
 import trabalho1
 import trabalho2
 import trabalho3
+import trabalho4
 
 def main():
     # Abre a imagem em escala de cinza.
     # trabalho1.trabalhoArroz()
-    trabalho3.exec()
+    trabalho4.exec()
 
 if __name__ == '__main__':
     main()

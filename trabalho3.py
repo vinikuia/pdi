@@ -27,9 +27,9 @@ def exec():
     imgFinalGaussiana = gb.execGaussianBloom(img)
     imgFinalBoxBlur = bb.execBoxBlur(img)
 
-    cv2.imshow('imgFinalGaussiana - out', imgFinalGaussiana)
-    cv2.imwrite('imgFinalGaussiana - out.png', imgFinalGaussiana * 255)
-    cv2.imshow('imgFinalBoxBlur - out', imgFinalBoxBlur)
-    cv2.imwrite('imgFinalBoxBlur - out.png', imgFinalBoxBlur * 255)
+    cv2.imshow(INPUT_IMAGE + 'imgFinalGaussiana - out', imgFinalGaussiana)
+    cv2.imwrite(INPUT_IMAGE+'imgFinalGaussiana - out.png', imgFinalGaussiana * 255)
+    cv2.imshow(INPUT_IMAGE+'imgFinalBoxBlur - out', imgFinalBoxBlur)
+    cv2.imwrite(INPUT_IMAGE+'imgFinalBoxBlur - out.png', imgFinalBoxBlur * 255)
     cv2.waitKey() & 0xff
     cv2.destroyAllWindows()
