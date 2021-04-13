@@ -11,7 +11,7 @@ import rotulaTrabalho4
 #'150.bmp'
 #'205.bmp'
 
-INPUT_IMAGE = '114.bmp'
+INPUT_IMAGE = '150.bmp'
 IS_CINZA = True # se True abre a imagem como GrayScale, se não abre como Colorida
 
 TAMANHO_JANELA_ALTURA = 11
@@ -59,7 +59,7 @@ def exec():
 
     for items in range (0,len(vetorAreas)):
         temp = vetorAreas[items]
-        if areaLimiar * 1.9 < temp:
+        if areaLimiar * 2 < temp:
             riceCount.append(int(np.ceil(temp/areaLimiar)))
         else:
             riceCount.append(1)

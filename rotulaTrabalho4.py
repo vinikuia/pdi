@@ -1,4 +1,5 @@
 import floodFillTrabalho4
+import traceback
 
 ALTURA_MIN = 10
 LARGURA_MIN = 10
@@ -37,7 +38,10 @@ respectivamente: topo, esquerda, baixo e direita.'''
                 menor_coluna = shape[1]
                 maior_coluna = 1
                 rotulo += 0.1
-                tamanho = floodFillTrabalho4.floodFillRecursivo(img, i, j, shape,rotulo)
+                try:
+                    tamanho = floodFillTrabalho4.floodFillRecursivo(img, i, j, shape,rotulo)
+                except:
+                    pass
                 # for item in tamanho:
                     # if item[0] < menor_linha:
                     #     menor_linha = item[0]
