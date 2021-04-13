@@ -9,7 +9,7 @@ from matplotlib import pyplot as plt
 #'150.bmp'
 #'205.bmp'
 
-INPUT_IMAGE = '150.bmp'
+INPUT_IMAGE = '60.bmp'
 IS_CINZA = True # se True abre a imagem como GrayScale, se não abre como Colorida
 
 TAMANHO_JANELA_ALTURA = 11
@@ -27,8 +27,10 @@ def exec():
     mask = cv2.adaptiveThreshold(mask,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY,7,2) #limiarizando a imagem com o gaussian blur (melhor para ruídos)
     cv2.floodFill(mask, None, (0,0), 0) #preencho o background de preto (já que nenhuma imagem tem um grão de arroz encostado na borda é só setar o flood fill no pixel 0,0
     kernal = np.ones((3,3),np.uint8) #kernel para morfologia
-    opening = cv2.morphologyEx(mask,cv2.MORPH_OPEN,kernal) #basta um opening (que nada mais é do que erodir -> dilatar em sequência, isso lida com os ruídos brancos
-    cv2.imshow('binarizada-arroz', opening)
+    opening = cv2.morphologyEx(mask,cv2.MORPH_OPEN,kernal, iterations=2) #basta um opening (que nada mais é do que erodir -> dilatar em sequência, isso lida com os ruídos brancos
+    closing = cv2.morphologyEx(opening, cv2.MORPH_CLOSE, kernal, iterations=1)
+    cv2.imshow('binarizada-arroz-closing', closing)
+    cv2.imshow('binarizada-arroz-opening', opening)
     cv2.imwrite('binarizada-arroz.bmp', mask)
 
 
