@@ -11,7 +11,7 @@ import rotulaTrabalho4
 #'150.bmp'
 #'205.bmp'
 
-INPUT_IMAGE = '60.bmp'
+INPUT_IMAGE = '114.bmp'
 IS_CINZA = True # se True abre a imagem como GrayScale, se não abre como Colorida
 
 TAMANHO_JANELA_ALTURA = 11
@@ -31,14 +31,45 @@ def exec():
     kernal = np.ones((3,3),np.uint8) #kernel para morfologia
     opening = cv2.morphologyEx(mask,cv2.MORPH_OPEN,kernal, iterations=2) #basta um opening (que nada mais é do que erodir -> dilatar em sequência, isso lida com os ruídos brancos
     closing = cv2.morphologyEx(opening, cv2.MORPH_CLOSE, kernal, iterations=1)
-    cv2.imshow('binarizada-arroz-closing', closing)
-    cv2.imshow('binarizada-arroz-opening', opening)
-    cv2.imwrite('binarizada-arroz.bmp', mask)
+
+
+    #cv2.imshow('binarizada-arroz-closing', closing)
+    #cv2.imshow('binarizada-arroz-opening', opening)
+    #cv2.imwrite('binarizada-arroz.bmp', mask)
+
+
     img_out = closing.astype(np.float32) / 255
     img_out = np.where(img_out == 1, -1, 0).astype(np.float32)
+
+
     componentes = rotulaTrabalho4.rotula(img_out)
-    n_componentes = len(componentes)
+    vetorAreas = []
+
+    for items in componentes:
+        vetorAreas.append(items['n_pixels'])
+
+    vetorAreas = sorted(vetorAreas)
+    vetorAreas = np.array(vetorAreas)
+
     cv2.imshow('img_out', img_out)
+
+    areaLimiar = np.median(vetorAreas)
+
+    riceCount = []
+
+    for items in range (0,len(vetorAreas)):
+        temp = vetorAreas[items]
+        if areaLimiar * 1.9 < temp:
+            riceCount.append(int(np.ceil(temp/areaLimiar)))
+        else:
+            riceCount.append(1)
+
+    riceSum = 0
+    for items in riceCount:
+        riceSum += items
+
+    print(riceSum)
+
     #images = [img,mask,opening,closing,mg,th,img_tentativa]
     # img_binarizada =cv2.adaptiveThreshold(img,255,cv2.ADAPTIVE_THRESH_MEAN_C,cv2.THRESH_BINARY,11,2)
     # cv2.imshow('img_binarizada',img_binarizada)
