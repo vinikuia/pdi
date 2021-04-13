@@ -34,6 +34,8 @@ def exec():
     cv2.imwrite('binarizada-arroz.bmp', mask)
 
 
+
+
     #images = [img,mask,opening,closing,mg,th,img_tentativa]
     # img_binarizada =cv2.adaptiveThreshold(img,255,cv2.ADAPTIVE_THRESH_MEAN_C,cv2.THRESH_BINARY,11,2)
     # cv2.imshow('img_binarizada',img_binarizada)
