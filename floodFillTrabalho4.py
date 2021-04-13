@@ -13,6 +13,7 @@ def floodFillRecursivo(img, i, j,shape, rotulo):
             coordenadas.append(item)
     if img[i-1][j] == -1.0:
         aux = floodFillRecursivo(img, i - 1, j,shape, rotulo)
+
         for item in aux:
             coordenadas.append(item)
     if img[i][j+1] == -1.0:
@@ -23,4 +24,6 @@ def floodFillRecursivo(img, i, j,shape, rotulo):
         aux = floodFillRecursivo(img, i, j - 1, shape,rotulo)
         for item in aux:
             coordenadas.append(item)
+    if not isinstance(coordenadas[0:coordenadas.__sizeof__()],list):
+        print(coordenadas[0:coordenadas.__sizeof__()])
     return coordenadas[0:coordenadas.__sizeof__()]

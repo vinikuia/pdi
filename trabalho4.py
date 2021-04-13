@@ -11,7 +11,7 @@ import rotulaTrabalho4
 #'150.bmp'
 #'205.bmp'
 
-INPUT_IMAGE = '114.bmp'
+INPUT_IMAGE = '150.bmp'
 IS_CINZA = True # se True abre a imagem como GrayScale, se não abre como Colorida
 
 TAMANHO_JANELA_ALTURA = 11
@@ -32,40 +32,52 @@ def exec():
     opening = cv2.morphologyEx(mask,cv2.MORPH_OPEN,kernal, iterations=2) #basta um opening (que nada mais é do que erodir -> dilatar em sequência, isso lida com os ruídos brancos
     closing = cv2.morphologyEx(opening, cv2.MORPH_CLOSE, kernal, iterations=1)
 
+
+    #cv2.imshow('binarizada-arroz-closing', closing)
+    #cv2.imshow('binarizada-arroz-opening', opening)
+    #cv2.imwrite('binarizada-arroz.bmp', mask)
+
+
     img_out = closing.astype(np.float32) / 255
     img_out = np.where(img_out == 1, -1, 0).astype(np.float32)
 
 
-    componentes = rotulaTrabalho4.rotula(img_out) #floodfill similar a versão do trabalho 1, retorna a área total do blob de interesse (contagem de pixeis)
+    componentes = rotulaTrabalho4.rotula(img_out)
     vetorAreas = []
 
     for items in componentes:
-        vetorAreas.append(items['n_pixels'])  #passamos esses valores da área dos blobs para um vetor
+        vetorAreas.append(items['n_pixels'])
 
-    vetorAreas = sorted(vetorAreas)  #ordenamos o vetor
+    vetorAreas = sorted(vetorAreas)
     vetorAreas = np.array(vetorAreas)
 
-    areaLimiar = np.median(vetorAreas) #pegamos a área do arroz mediano (supõe-se que é um arroz único por conta da quantidade de arroz soltos e a baixa quantidade de ruído e blobs de arroz grudados)
-                                       #caso existisse uma imagem com muitos blobs basta pegar um arroz mais no início do vetor, se fosse imagem com muitos ruídos, um arroz mas ao final do vetor.
+    cv2.imshow('img_out', img_out)
+
+    areaLimiar = np.median(vetorAreas)
+
     riceCount = []
 
-    for items in range (0,len(vetorAreas)):  #inserimos em uma lista arroz por arroz,e caso o blob seja maior do que a área do arroz mediano, supõe-se que são vários grudados
+    for items in range (0,len(vetorAreas)):
         temp = vetorAreas[items]
-        if areaLimiar * 1.9 < temp: #caso sejam diversos arroz grudados, dividimos a área do blob pela área do arroz mediano
+        if areaLimiar * 2 < temp:
             riceCount.append(int(np.ceil(temp/areaLimiar)))
-        elif areaLimiar * 0.3 > temp: #caso a área não seja muito pequena (em caso de ruído), não é arroz
-            riceCount.append(0)
-        else: #caso contrário é um único arroz
+        else:
             riceCount.append(1)
 
     riceSum = 0
-    for items in riceCount: #percorremos a lista riceCount somando todos os itens dela (número de arroz) para finalizar a contagem
+    for items in riceCount:
         riceSum += items
-
-    cv2.imshow('rotulada-arroz', img_out)
 
     print(riceSum)
 
+    #images = [img,mask,opening,closing,mg,th,img_tentativa]
+    # img_binarizada =cv2.adaptiveThreshold(img,255,cv2.ADAPTIVE_THRESH_MEAN_C,cv2.THRESH_BINARY,11,2)
+    # cv2.imshow('img_binarizada',img_binarizada)
+    for i in range(9):
+        #plt.subplot(5, 2, i + 1), plt.imshow(images[i], 'gray')
+        plt.title(titles[i])
+        plt.xticks([]), plt.yticks([])
 
+    #plt.show()
     cv2.waitKey() & 0xff
     cv2.destroyAllWindows()
