@@ -1,8 +1,7 @@
-import floodfill
+import floodFillTrabalho4
 
 ALTURA_MIN = 10
 LARGURA_MIN = 10
-N_PIXELS_MIN = 200
 
 def rotula(img):
     '''Rotulagem usando flood fill. Marca os objetos da imagem com os valores
@@ -38,17 +37,17 @@ respectivamente: topo, esquerda, baixo e direita.'''
                 menor_coluna = shape[1]
                 maior_coluna = 1
                 rotulo += 0.1
-                tamanho = floodfill.floodFillRecursivo(img, i, j, shape,rotulo)
-                if tamanho.__sizeof__() > N_PIXELS_MIN:
-                    for item in tamanho:
-                        if item[0] < menor_linha:
-                            menor_linha = item[0]
-                        if item[0] > maior_linha:
-                            maior_linha = item[0]
-                        if item[1] < menor_coluna:
-                            menor_coluna = item[1]
-                        if item[1] > maior_coluna:
-                            maior_coluna = item[1]
-                    lista.append({'label': rotulo, 'n_pixels': tamanho.__sizeof__(
-                    ), 'T': menor_linha, 'L': menor_coluna, 'B': maior_linha, 'R': maior_coluna})
+                tamanho = floodFillTrabalho4.floodFillRecursivo(img, i, j, shape,rotulo)
+                # for item in tamanho:
+                    # if item[0] < menor_linha:
+                    #     menor_linha = item[0]
+                    # if item[0] > maior_linha:
+                    #     maior_linha = item[0]
+                    # if item[1] < menor_coluna:
+                    #     menor_coluna = item[1]
+                    # if item[1] > maior_coluna:
+                    #     maior_coluna = item[1]
+                # lista.append({'label': rotulo, 'n_pixels': tamanho.__sizeof__(
+                # ), 'T': menor_linha, 'L': menor_coluna, 'B': maior_linha, 'R': maior_coluna})
+                lista.append({'n_pixels': tamanho.__sizeof__()})
     return lista
