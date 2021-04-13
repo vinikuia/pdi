@@ -31,13 +31,7 @@ respectivamente: topo, esquerda, baixo e direita.'''
     for i in range(0, shape[0]):
         for j in range(0, shape[1]):
             if img[i][j] == -1.0:
-                # print (i,j)
-                # sys.exit()
-                menor_linha = shape[0]
-                maior_linha = 1
-                menor_coluna = shape[1]
-                maior_coluna = 1
-                rotulo += 0.1
+                rotulo += 0.005
                 try:
                     tamanho = floodFillTrabalho4.floodFillRecursivo(img, i, j, shape,rotulo)
                 except:
