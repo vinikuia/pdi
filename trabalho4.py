@@ -2,6 +2,8 @@ import sys
 import cv2
 import numpy as np
 from matplotlib import pyplot as plt
+import floodFillTrabalho4
+import rotulaTrabalho4
 
 #'60.bmp'
 #'82.bmp'
@@ -32,8 +34,11 @@ def exec():
     cv2.imshow('binarizada-arroz-closing', closing)
     cv2.imshow('binarizada-arroz-opening', opening)
     cv2.imwrite('binarizada-arroz.bmp', mask)
-
-
+    img_out = closing.astype(np.float32) / 255
+    img_out = np.where(img_out == 1, -1, 0).astype(np.float32)
+    componentes = rotulaTrabalho4.rotula(img_out)
+    n_componentes = len(componentes)
+    cv2.imshow('img_out', img_out)
     #images = [img,mask,opening,closing,mg,th,img_tentativa]
     # img_binarizada =cv2.adaptiveThreshold(img,255,cv2.ADAPTIVE_THRESH_MEAN_C,cv2.THRESH_BINARY,11,2)
     # cv2.imshow('img_binarizada',img_binarizada)
