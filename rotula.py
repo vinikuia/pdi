@@ -38,7 +38,7 @@ respectivamente: topo, esquerda, baixo e direita.'''
                 menor_coluna = shape[1]
                 maior_coluna = 1
                 rotulo += 0.1
-                tamanho = floodfill.floodFillRecursivo(img, i, j, shape,larrotulo)
+                tamanho = floodfill.floodFillRecursivo(img, i, j, shape,rotulo)
                 if tamanho.__sizeof__() > N_PIXELS_MIN:
                     for item in tamanho:
                         if item[0] < menor_linha:
