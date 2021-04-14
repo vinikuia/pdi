@@ -5,11 +5,6 @@ from matplotlib import pyplot as plt
 import floodFillTrabalho4
 import rotulaTrabalho4
 
-#'60.bmp'
-#'82.bmp'
-#'114.bmp'
-#'150.bmp'
-#'205.bmp'
 
 INPUT_IMAGE = '60.bmp'
 IS_CINZA = True # se True abre a imagem como GrayScale, se não abre como Colorida
