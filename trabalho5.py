@@ -6,8 +6,8 @@ import floodFillTrabalho4
 import rotulaTrabalho4
 
 
-INPUT_IMAGE = '60.bmp'
-IS_CINZA = True # se True abre a imagem como GrayScale, se não abre como Colorida
+INPUT_IMAGE = '0.bmp'
+IS_CINZA = False # se True abre a imagem como GrayScale, se não abre como Colorida
 
 TAMANHO_JANELA_ALTURA = 11
 TAMANHO_JANELA_LARGURA = 15
@@ -15,64 +15,51 @@ TAMANHO_JANELA_LARGURA = 15
 def exec():
     if IS_CINZA:
         img = cv2.imread(INPUT_IMAGE, cv2.IMREAD_GRAYSCALE)
+    else:
+        img = cv2.imread(INPUT_IMAGE, cv2.IMREAD_COLOR)
     if img is None:
         print('Erro abrindo a imagem.\n')
         sys.exit()
-    titles = ['image','mask','dilation','erosion','opening','closing','mg','th','img_tentativa']
 
-    mask = cv2.medianBlur(img, 7) #borrando a imagem para lidar um pouco com o ruído inicial, usando blur da mediana por ser mais efetivo contra ruídos
-    mask = cv2.adaptiveThreshold(mask,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY,7,2) #limiarizando a imagem com o gaussian blur (melhor para ruídos)
-    cv2.floodFill(mask, None, (0,0), 0) #preencho o background de preto (já que nenhuma imagem tem um grão de arroz encostado na borda é só setar o flood fill no pixel 0,0
-    kernal = np.ones((3,3),np.uint8) #kernel para morfologia
-    opening = cv2.morphologyEx(mask,cv2.MORPH_OPEN,kernal, iterations=2) #basta um opening (que nada mais é do que erodir -> dilatar em sequência, isso lida com os ruídos brancos
-    closing = cv2.morphologyEx(opening, cv2.MORPH_CLOSE, kernal, iterations=1)
+    background =cv2.imread("Wind Waker GC.bmp", cv2.IMREAD_COLOR)
+    img = cv2.resize(img, (640, 480))
+    background = cv2.resize(background, (640, 480))
 
+    u_green = np.array([255, 86, 255])
+    l_green = np.array([0, 36, 0])
 
-    #cv2.imshow('binarizada-arroz-closing', closing)
-    #cv2.imshow('binarizada-arroz-opening', opening)
-    #cv2.imwrite('binarizada-arroz.bmp', mask)
+    hsv_img = cv2.cvtColor(img, cv2.COLOR_RGB2HSV_FULL)
+    mask = cv2.inRange(hsv_img, l_green, u_green)
+    res = cv2.bitwise_and(hsv_img, hsv_img, mask=mask)
 
 
-    img_out = closing.astype(np.float32) / 255
-    img_out = np.where(img_out == 1, -1, 0).astype(np.float32)
+    hsv_img = cv2.cvtColor(img, cv2.COLOR_HSV2RGB_FULL)
 
+    f = hsv_img - res
+    cv2.imshow("mask", f)
+    f = np.where(f == 0, background, f)
+    cv2.imshow("mask2", f)
 
-    componentes = rotulaTrabalho4.rotula(img_out)
-    vetorAreas = []
-
-    for items in componentes:
-        vetorAreas.append(items['n_pixels'])
-
-    vetorAreas = sorted(vetorAreas)
-    vetorAreas = np.array(vetorAreas)
-
-    cv2.imshow('img_out', img_out)
-
-    areaLimiar = np.median(vetorAreas)
-
-    riceCount = []
-
-    for items in range (0,len(vetorAreas)):
-        temp = vetorAreas[items]
-        if areaLimiar * 2.1 < temp:
-            riceCount.append(int(np.ceil(temp/areaLimiar)))
-        else:
-            riceCount.append(1)
-
-    riceSum = 0
-    for items in riceCount:
-        riceSum += items
-
-    print(riceSum)
-
-    #images = [img,mask,opening,closing,mg,th,img_tentativa]
-    # img_binarizada =cv2.adaptiveThreshold(img,255,cv2.ADAPTIVE_THRESH_MEAN_C,cv2.THRESH_BINARY,11,2)
-    # cv2.imshow('img_binarizada',img_binarizada)
-    for i in range(9):
-        #plt.subplot(5, 2, i + 1), plt.imshow(images[i], 'gray')
-        plt.title(titles[i])
-        plt.xticks([]), plt.yticks([])
-
-    #plt.show()
+    cv2.imshow("video", img)
+    cv2.imshow("masked_image", hsv_img)
+    # background =cv2.imread("Wind Waker GC.bmp", cv2.IMREAD_COLOR)
+    # img = cv2.resize(img, (640, 480))
+    # background = cv2.resize(background, (640, 480))
+    #
+    # image_copy = np.copy(img)
+    # image_copy = cv2.cvtColor(image_copy, cv2.COLOR_BGR2RGB)
+    # lower_blue = np.array([0, 0, 100])  ##[R value, G value, B value]
+    # upper_blue = np.array([120, 100, 255])
+    # mask = cv2.inRange(image_copy, lower_blue, upper_blue)
+    # masked_image = np.copy(image_copy)
+    # res = cv2.bitwise_and(image_copy, image_copy, mask=mask)
+    # cv2.imshow('mask',res)
+    #
+    # cv2.imshow('masked_image',masked_image)
+    #
+    # background[mask == 0] = [0, 0, 0]
+    # final_image = background + masked_image
+    # cv2.imshow('final',final_image)
     cv2.waitKey() & 0xff
+
     cv2.destroyAllWindows()
