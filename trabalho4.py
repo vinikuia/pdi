@@ -11,12 +11,11 @@ import rotulaTrabalho4
 #'150.bmp'
 #'205.bmp'
 
-
 #multiplicador do tamanho da área do arroz mediano, quanto menor, menor o blob de arroz precisa ser para ser contado como mais do que um arroz.
 #Valores entre 1 e 2 são ideais, menores que 1 multiplicariam arroz únicos e maiores que 2 contariam junções de arroz como únicos.
 MULTIPLICADOR = 1.4
 
-INPUT_IMAGE = '82.bmp'
+INPUT_IMAGE = '114.bmp'
 IS_CINZA = True # se True abre a imagem como GrayScale, se não abre como Colorida
 
 TAMANHO_JANELA_ALTURA = 11
@@ -66,6 +65,7 @@ def exec():
         riceSum += items
 
     cv2.imshow('Rotulada-Arroz',img_out)
+    cv2.imshow('Imagem-Original', img)
     cv2.imwrite('Rotulada-Arroz.bmp', img_out*255)
 
     print(riceSum)
