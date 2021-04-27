@@ -1,15 +1,9 @@
 import sys
 import cv2
 import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib.image as mpimg
-
-from matplotlib import pyplot as plt
-import floodFillTrabalho4
-import rotulaTrabalho4
 
 
-INPUT_IMAGE = '8.bmp'
+INPUT_IMAGE = '3.bmp'
 IS_CINZA = False # se True abre a imagem como GrayScale, se não abre como Colorida
 
 TAMANHO_JANELA_ALTURA = 11
@@ -59,35 +53,37 @@ def exec():
     upper_green = np.array([90, 255, 255])
     # Threshold the HSV image to extract green color
     mask = cv2.inRange(hsv_img, lower_green, upper_green)
-    show_result('mask', mask, 0) #interesse = 255
+    show_result('mask', mask, 0)
 
-    # R = 0
-    # G = 0
-    # B = 0
-    # contador = 0
-    #
-    # for i in range (0, shape_img[0]):
-    #     for j in range (0, shape_img[1]):
-    #         if mask[i][j] == 255:
-    #             R += img[i][j][0]
-    #             G += img[i][j][1]
-    #             B += img[i][j][2]
-    #             contador += 1
-    # R = R/contador
-    # G = G/contador
-    # B = B/contador
-    # print(R,G,B)
-    # lower_green = np.array([36, G-75, 100])
-    # upper_green = np.array([90, G+75, 255])
-    # mask = cv2.inRange(hsv_img, lower_green, upper_green)
-    # show_result('mask', mask, 0)
+    H = 0
+    S = 0
+    V = 0
+    contador = 0
 
-    bordas = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[0]
+
+    for i in range (0, shape_img[0]):
+        for j in range (0, shape_img[1]):
+            if mask[i][j] == 255:
+                H += hsv_img[i][j][0]
+                S += hsv_img[i][j][1]
+                V += hsv_img[i][j][2]
+                contador += 1
+
+    H = H/contador
+    S = S/contador
+    V = V/contador
+    print(H,S,V)
+
+    lower_green = np.array([36, S-87, V-87])
+    upper_green = np.array([90, S+87, V+87])
+
+    mask = cv2.inRange(hsv_img, lower_green, upper_green)
+
+    bordas = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)[0]
     img_bordas = np.zeros((shape_img[0],shape_img[1],shape_img[2]), np.uint8)
     cv2.drawContours(img_bordas,bordas, -1, (255,255,255), 3)
 
     mask = cv2.bitwise_not(mask)
-    # show_result('mask', mask, 0)
     masked_image = np.copy(hsv_img)
     masked_image[mask==0] = [0,0,0],
     # show_result('masked_image', masked_image, 0)
@@ -96,8 +92,9 @@ def exec():
     # show_result('background_image', background_image, 0)
     final_image = background_image + masked_image
     final_image= cv2.cvtColor(final_image, cv2.COLOR_HSV2BGR)
-    blurred = cv2.GaussianBlur(final_image, (7,7), 0)
-    blurred_final_image = np.where(bordas==np.array([255,255,255]), final_image, blurred)
+    blurred = cv2.GaussianBlur(final_image, (5,5), 0)
+    show_result('blurred', img_bordas, 0)
+    blurred_final_image = np.where(img_bordas==np.array([255,255,255]), blurred, final_image)
     show_result('final_image', final_image, 0)
     show_result('blurred_img', blurred_final_image, 0)
     cv2.waitKey(0)
