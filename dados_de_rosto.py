@@ -14,6 +14,7 @@ def captura_dados_face():
 
     while True:
         ret,frame = cap.read()
+
         frame_escala_cinza = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
         if ret == False:
             continue
@@ -35,8 +36,19 @@ def captura_dados_face():
                 dados_de_rosto.append(selecao_de_rosto)
                 print(len(dados_de_rosto))
 
+            frameShape = frame.shape
+            mask = np.zeros((frameShape[0], frameShape[1], 3), dtype=np.uint8)
+            for i in range (y, y + h):
+                for j in range (x, x+w):
+                    mask[i][j][:] = 255
+            cv2.imshow('mask', mask)
+            blurredImage = cv2.GaussianBlur(frame, (35,35), 0)
+            blurredFace = np.where(mask==np.array([255,255,255]), blurredImage, frame)
+
             cv2.imshow(str(k),selecao_de_rosto)
             k+=1
+
+            cv2.imshow("rostos_borrados", blurredFace)
 
             cv2.rectangle(frame,(x,y),(x+w,y+h),(0,255,0),2)
         cv2.imshow("rostos",frame)
