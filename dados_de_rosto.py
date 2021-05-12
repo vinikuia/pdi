@@ -13,12 +13,12 @@ def captura_dados_face():
     dataset_path = "./dados_de_rosto/"
 
     nome_do_arquivo = input("Qual o nome desse rosto??")
-    ret, frame = cap.read()
-    if ret != False:
-        frameShape = frame.shape
-        mask = np.zeros((frameShape[0], frameShape[1], 3), dtype=np.uint8)
+
     while True:
-        ret,frame = cap.read()
+        ret, frame = cap.read()
+        if ret != False:
+            frameShape = frame.shape
+            mask = np.zeros((frameShape[0], frameShape[1], 3), dtype=np.uint8)
 
         frame_escala_cinza = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
         if ret == False:
@@ -27,6 +27,7 @@ def captura_dados_face():
         k=1
         rostos = sorted(rostos,key =lambda x : x[2]*x[3], reverse=True)
         skip +=1
+
         for rosto in rostos:
             x,y,w,h = rosto
             offset = 5
@@ -43,14 +44,16 @@ def captura_dados_face():
             for i in range (y, y + h):
                 for j in range (x, x+w):
                     mask[i][j][:] = 255
+
             cv2.imshow('mask', mask)
-            blurredImage = cv2.GaussianBlur(frame, (35,35), 0)
-            blurredFace = np.where(mask==np.array([255,255,255]), blurredImage, frame)
+            blurredImage = cv2.GaussianBlur(frame, (35, 35), 0)
+            blurredFace = np.where(mask == np.array([255, 255, 255]), blurredImage, frame)
+            cv2.imshow("rostos_borrados", blurredFace)
+
 
             cv2.imshow(str(k),selecao_de_rosto)
             k+=1
 
-            cv2.imshow("rostos_borrados", blurredFace )
 
             cv2.rectangle(frame,(x,y),(x+w,y+h),(0,255,0),2)
             # olhos = cascata_de_olho.detectMultiScale(frame_escala_cinza,1.5,5)
@@ -64,6 +67,7 @@ def captura_dados_face():
             #     cv2.rectangle(frame, (sx, sy), (sx + sw, sy + sh), (0, 255, 0), 2)
 
         cv2.imshow("rostos",frame)
+
         key_pressed = cv2.waitKey(1) & 0xFF
         if key_pressed == ord('q'):
             break

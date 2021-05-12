@@ -1,36 +1,9 @@
 import cv2
 import numpy as np
 import os
-import pylab as p
-from sklearn.metrics import classification_report
-from sklearn.metrics import confusion_matrix
-from sklearn.svm import SVC
-from sklearn.decomposition import PCA as RandomizedPCA
-from sklearn.model_selection import GridSearchCV
+
 from pathlib import Path
 import pickle
-
-def distance(v1,v2):
-    # distancia euclidiana
-    return np.sqrt(((v1-v2)**2).sum())
-
-def knn(train,test,k=5):
-    dist = []
-
-    for i in range(train.shape):
-        #captura o vetor e nomeia
-        ix = train[i, :-1]
-        iy = train[i,-1]
-
-        d = distance(test,ix)
-        dist.append([d,iy])
-    dk = sorted(dist,key=lambda x: x[0])[:k]
-
-    rotulos = np.array(dk)[:,-1]
-    output = np.unique(rotulos,return_counts=True)
-
-    index = np.argmax(output[1])
-    return output[0][index]
 
 def face_recognition_trainer():
     dataset_path = "./dados_de_rosto/"
